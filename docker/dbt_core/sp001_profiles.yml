@@ -1,0 +1,12 @@
+sp001_profile:
+  target: dev
+  outputs:
+    dev:
+      type: mysql
+      server: mysql
+      port: 3306
+      user: dbt_user
+      password: 12345
+      schema: mydb
+      database: mydb
+      threads: 4

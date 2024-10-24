@@ -1,0 +1,8 @@
+/ETL_workspace/
+/pre_data_proccessing_workspace/
+
+*.json
+.env
+*.txt
+*.csv
+*.xlsx

@@ -1,0 +1,8 @@
+name: 'dbt_sp001'
+version: '1.0'
+profile: 'sp001_profile'
+config-version: 2
+
+models:
+  dbt_sp001:
+    materialized: view
