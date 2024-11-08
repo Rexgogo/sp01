@@ -224,7 +224,7 @@ services:
 
   postgres:
     build:
-      context: ./sp001_workdata_analysis/stack/postgres
+      context: ./postgres
     image: sp01_db_pg
     container_name: sp01_db_pg
     environment:
@@ -247,7 +247,7 @@ services:
 
   pgadmin:
     build:
-      context: ./sp001_workdata_analysis/stack/pgadmin
+      context: ./pgadmin
     image: sp01_db_pgadmin
     container_name: sp01_db_pgadmin
     ports:
@@ -262,7 +262,7 @@ services:
 
   nifi:  
     build: 
-      context: ./sp001_workdata_analysis/stack/nifi
+      context: ./nifi
     image: sp01_etl_nifi
     container_name: sp01_etl_nifi
     restart: always
@@ -279,7 +279,7 @@ services:
       - ./nifi/provenance:/opt/nifi/nifi-1.25.0/provenance_repository # 數據溯源記錄
       - ./init-nifi.sh:/opt/nifi/init-nifi.sh
     networks:
-      sp_bridge_001:
+      - sp_bridge_001
     # healthcheck:
     #   test: ["CMD", "pg_isready", "-U", "postgres"]
     #   interval: 10s
@@ -289,20 +289,19 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      
     # https://localhost:8443
   
   # nifi資源管理  
   nifi-registry-container:
     build:
-      context: ./sp001_workdata_analysis/stack/nifi_registry
-    image: sp01_etl_nifi_registry_1.25.0
+      context: ./nifi_registry
+    image: sp01_etl_nifi_registry
     container_name: sp01_etl_nifi_registry
     restart: always
     ports:
       - "18080:18080"
     networks:
-      sp_bridge_001:
+      - sp_bridge_001
   
   # spark-master:
     # image: bitnami/spark:3
@@ -345,7 +344,7 @@ services:
   
   superset:
     build:
-      context: ./stack/superset
+      context: ./superset
     image: sp01_viz_superset
     container_name: sp01_report_superset
     ports:
