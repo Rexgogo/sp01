@@ -34,7 +34,7 @@ x-airflow-common:
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:12345@postgres:5433/sp01_db_postgres
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
@@ -57,6 +57,8 @@ x-airflow-common:
     - ./docker/airflow/logs:/opt/airflow/logs
     - ./docker/airflow/config:/opt/airflow/config
     - ./docker/airflow/plugins:/opt/airflow/plugins
+  networks:
+    - sp_bridge_001
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -71,7 +73,7 @@ services:
       context: ./docker/postgres
       dockerfile: Dockerfile
     env_file:
-      - ./docker/.env
+      - .env
     image: sp01_db_pg
     container_name: sp01_db_pg
     ports:
@@ -93,7 +95,7 @@ services:
       context: ./docker/pgadmin
       dockerfile: Dockerfile
     env_file:
-      - ./docker/.env
+      - .env
     image: sp01_db_pgadmin
     container_name: sp01_db_pgadmin
     ports:
@@ -316,7 +318,7 @@ services:
       context: ./docker/nifi
       dockerfile: Dockerfile
     env_file:
-      - ./docker/.env
+      - .env
     image: sp01_etl_nifi
     container_name: sp01_etl_nifi
     restart: always
@@ -350,7 +352,7 @@ services:
       context: ./docker/nifi_registry
       dockerfile: Dockerfile
     env_file:
-      - ./docker/.env
+      - .env
     image: sp01_etl_nifi_registry
     container_name: sp01_etl_nifi_registry
     restart: always
@@ -364,7 +366,7 @@ services:
       context: ./docker/superset
       dockerfile: Dockerfile
     env_file:
-      - ./docker/.env
+      - .env
     image: sp01_viz_superset
     container_name: sp01_report_superset
     ports:
