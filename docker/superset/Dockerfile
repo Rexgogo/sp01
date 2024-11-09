@@ -1,8 +1,10 @@
 FROM apache/superset:latest
 
-
+ENV SUPERSET_CONFIG_PATH: /app/superset_config.py
 ENV SUPERSET_ENV=production
 ENV SUPERSET_LOAD_EXAMPLES=yes
+ENV POSTGRES_DB: superset
+ENV POSTGRES_USER: superset
 ENV SUPERSET_SECRET_KEY={SUPERSET_SECRET_KEY}
 
 
