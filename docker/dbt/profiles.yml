@@ -1,0 +1,18 @@
+default:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: daily-report-401707
+      dataset: sp001
+      keyfile: /root/.gcp/credentials.json
+      location: US
+      threads: 4
+      timeout_seconds: 300
+
+# Place your BigQuery service account credentials in ./docker/dbt/credentials.json
+# Update the project-id and dataset in profiles.yml
+# The service will be accessible from other containers via the sp_bridge_001 network
+# dbt models and other artifacts are mounted as volumes for persistence
+# The service depends on postgres to ensure proper startup order

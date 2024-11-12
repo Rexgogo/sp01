@@ -1,10 +1,14 @@
 FROM apache/superset:latest
 
-ENV SUPERSET_CONFIG_PATH: /app/superset_config.py
-ENV SUPERSET_ENV=production
-ENV SUPERSET_LOAD_EXAMPLES=yes
-ENV POSTGRES_DB: superset
-ENV POSTGRES_USER: superset
-ENV SUPERSET_SECRET_KEY={SUPERSET_SECRET_KEY}
+USER root
 
+# Install additional packages
+RUN pip install --no-cache-dir \
+    psycopg2-binary \
+    sqlalchemy-bigquery \
+    google-cloud-bigquery
 
+COPY /config/superset_config.py /app/config/superset_config.py
+COPY /credentials/credentials.json /app/credentials/credentials.json
+
+USER superset

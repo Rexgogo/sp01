@@ -26,16 +26,15 @@
 ---
 x-airflow-common:
   &airflow-common
-  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
-  # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
-  # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.9.2}
   # build: .
+  env_file:
+      - .env
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:12345@postgres:5433/sp01_db_postgres
-    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://sp01_db_postgres:mypostgres12345@postgres:5432/sp01_db_postgres # postgres user: pwd@hostname:5432/db_name
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://sp01_db_postgres:mypostgres12345@postgres:5432/sp01_db_postgres
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
@@ -74,8 +73,12 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    image: sp01_db_pg
-    container_name: sp01_db_pg
+    image: sp01_db_postgres
+    container_name: sp01_db_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5433:5432" # local port 5432 occupied
     volumes:
@@ -83,30 +86,30 @@ services:
     networks:
       - sp_bridge_001
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "airflow"]
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
       interval: 10s
       retries: 5
       start_period: 5s
     restart: always
     # TEST: docker exec -it sp01_db_postgres psql -U sp01 -d sp01_db_postgres
 
-  pgadmin:
-    build:
-      context: ./docker/pgadmin
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    image: sp01_db_pgadmin
-    container_name: sp01_db_pgadmin
-    ports:
-      - "5434:80"
-    volumes:
-      - ./docker/pgadmin/data:/var/lib/pgadmin
-    networks:
-      - sp_bridge_001
-    depends_on:
-      - postgres
-    # http://localhost:5434
+  # pgadmin:
+  #   build:
+  #     context: ./docker/pgadmin
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - .env
+  #   image: sp01_db_pgadmin
+  #   container_name: sp01_db_pgadmin
+  #   ports:
+  #     - "5434:80"
+  #   volumes:
+  #     - ./docker/pgadmin/data:/var/lib/pgadmin
+  #   networks:
+  #     - sp_bridge_001
+  #   depends_on:
+  #     - postgres
+  #   # http://localhost:5434
 
   redis:
     # Redis is limited to 7.2-bookworm due to licencing change
@@ -321,7 +324,9 @@ services:
       - .env
     image: sp01_etl_nifi
     container_name: sp01_etl_nifi
-    restart: always
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=${NIFI_USERNAME}
+      - SINGLE_USER_CREDENTIALS_PASSWORD=${NIFI_PASSWORD}
     ports:
       # port 8443用於HTTPS通訊
       - "8443:8443"
@@ -342,6 +347,7 @@ services:
     #   retries: 6
     #   start_period: 5s
     #   restart: always
+    restart: always
     depends_on:
       postgres:
         condition: service_healthy
@@ -368,39 +374,67 @@ services:
     env_file:
       - .env
     image: sp01_viz_superset
-    container_name: sp01_report_superset
+    container_name: sp01_viz_superset
     ports:
-      - "5435:5435"
+      - "8088:8088"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SUPERSET_ADMIN_USER: ${SUPERSET_ADMIN_USER}
+      SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD}
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
+      SUPERSET_LOAD_EXAMPLES: yes
+      SUPERSET_CONFIG_PATH: /app/config/superset_config.py
+      GOOGLE_APPLICATION_CREDENTIALS: /app/credentials/credentials.json
     volumes:
-      - ./docker/superset/superset_home:/app/superset_home
-      - ./docker/superset/superset_config.py:/app/superset_config.py
+      - ./docker/superset/home:/app/superset_home
+      - ./docker/superset/config:/app/config
+      - ./docker/superset/credentials:/app/credentials
     networks:
       - sp_bridge_001
     depends_on:
       postgres:
         condition: service_healthy
-    # https://localhost:5435
-    # postgresql://superset:superset_password@postgres:5432/superset_db
+    # http://127.0.0.1:8088
+    
   
-  vault:
-    build:
-      context: ./docker/vault
-      dockerfile: Dockerfile
-    image: sp01_vault
-    container_name: sp01_vault
-    ports:
-      - "8200:8200"
-    cap_add:
-      - IPC_LOCK
-    networks:
-      - sp_bridge_001
-    healthcheck:
-      test: ["CMD", "vault", "status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    command: server -dev
+  # vault:
+  #   build:
+  #     context: ./docker/vault
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - .env
+  #   image: sp01_vault
+  #   container_name: sp01_vault
+  #   user: "${UID:-1000}:${GID:-1000}"
+  #   cap_add:
+  #     - IPC_LOCK
+  #     - SETFCAP
+  #   security_opt:
+  #     - seccomp:unconfined
+  #   privileged: true
+  #   ports:
+  #     - "8200:8200"
+  #   volumes:
+  #     - vault_logs:/vault/logs
+  #     - vault_config:/vault/config
+  #     - vault_policies:/vault/policies
+  #     - vault_tls:/vault/tls
+  #   networks:
+  #     - sp_bridge_001
+  #   healthcheck:
+  #     test: ["CMD", "vault", "status"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
 
 networks:
   sp_bridge_001:
     driver: bridge
+
+volumes:
+  vault_logs:
+  vault_config:
+  vault_policies:
+  vault_tls:
