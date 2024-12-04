@@ -1,3 +1,5 @@
+{{config(materialized="table")}}
+
 WITH customers AS (
     SELECT * FROM dbt-tutorial.jaffle_shop.customers
 ), orders AS (
