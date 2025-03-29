@@ -41,7 +41,7 @@ SP01/
 
 Each component is modular and easily testable, supporting better debugging, scalability, and collaboration.
 
-## Tech Stack
+## Data Stack
 | Category          | Tool/Library      | Purpose                                               |
 |-------------------|-------------------|--------------------------------------------------------|
 | Language          | Python             | ETL scripting and orchestration                       |
