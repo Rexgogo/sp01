@@ -1,0 +1,24 @@
+# sp01:
+#   target: dev
+#   outputs:
+#     dev:
+#       type: bigquery
+#       method: service-account
+#       keyfile: /app/credentials/BQ_401707_sp01_token_0109.json
+#       project: sp01
+#       dataset: dbt_operation
+#       threads: 4
+#       location: US
+
+sp001:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      keyfile: /usr/app/credentials/BQ_401707_sp01_token_0109.json
+      project: daily-report-401707
+      dataset: sp001
+      threads: 1
+      location: US
+      

@@ -1,10 +1,10 @@
 FROM apache/superset:latest
 
-# 设置工作目录
+# set workdir
 WORKDIR /app
 
-# 复制 requirements-local.txt 到容器内
+# copy requirements-local.txt to container
 COPY requirements-local.txt .
 
-# 安装依赖项
+# install requirements
 RUN pip install --no-cache-dir -r requirements-local.txt

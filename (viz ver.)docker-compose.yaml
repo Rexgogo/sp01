@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  superset:
+    build:
+      context: ./docker/superset
+      dockerfile: Dockerfile
+    image: sp01_test_superset
+    container_name: sp01_test_superset
+    environment:
+      - SUPERSET_ENV=production
+      - SUPERSET_SECRET_KEY=sp01
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/credentials.json
+    volumes:
+      - ./docker/superset/home:/app/superset_home
+      - ./docker/superset/config:/app/config
+      - ./docker/superset/credentials:/app/credentials 
+    ports:
+      - "8088:8088"
+    # depends_on:
+    #   檢查Big Query?
+
+  redis:
+    image: redis:latest
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: superset
+      POSTGRES_PASSWORD: superset
+      POSTGRES_DB: superset
