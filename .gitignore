@@ -1,23 +1,48 @@
-/pre_data_proccessing_workspace/
-/ETL_workspace/all_channel_rawdata/
-/ETL_workspace/data_source/
-/dbt_cloud_workdir/
+# Data workspaces
+pre_data_proccessing_workspace/
+ETL_workspace/all_channel_rawdata/
+ETL_workspace/data_source/
 
-*.json
-.env
-*.txt
-*.csv
-*.xlsx
-*.db
+# dbt cloud IDE working directory
+dbt_cloud_workdir/
 
+# Python
+__pycache__/
+*.py[cod]
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Docker container volume
+docker/postgres/data/
 docker/superset/home/superset.db
 
-# Default .gitignore content added by dbt Cloud# you shouldn't commit these into source control
-# these are the default directory names, adjust/add to fit your needs
-target/
-dbt_packages/
-logs/
+# System Files
+.DS_Store
+Thumbs.db
+
+# Sensitive config files
+.env
+*.json
 credentials/
-# end dbt Cloud content
+
+# Files
+*.log
+*.txt
+*.bak
+*.tmp
+*.db
+
+# Raw data
+*.csv
+*.xlsx
+
+# # Default .gitignore content added by dbt Cloud# you shouldn't commit these into source control
+# # these are the default directory names, adjust/add to fit your needs
+# target/
+# dbt_packages/
+# logs/
+# credentials/
 
 
