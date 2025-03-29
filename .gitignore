@@ -1,5 +1,6 @@
-/ETL_workspace/
 /pre_data_proccessing_workspace/
+/all_channel_rawdata/
+/dbt_cloud_workdir/
 
 *.json
 .env
