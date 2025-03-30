@@ -1,0 +1,7 @@
+gsheet_deduction_rate:
+  url: "https://docs.google.com/spreadsheets/d/1Ky5-j5nM-qlEO5xNrj3ZT9egOzs9r3LDxSUEem_f8cM/edit?usp=sharing" 
+  sheet_name: "deduction_rate"
+
+gsheet_test:
+  url: "https://docs.google.com/spreadsheets/d/12dLsLMUGOSrHpHvj_maCXKAXf2drnda-GDdsNL_UdJ8/edit"
+  sheet_name: "test"
