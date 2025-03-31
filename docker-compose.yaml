@@ -306,6 +306,8 @@ services:
     entrypoint: ["tail", "-f", "/dev/null"]
     networks:
       - sp_bridge_001
+        # ports:
+    #   - "8080:8080"
 
   superset:
     build:

@@ -1,8 +1,9 @@
-name: sp01_dbt
+name: sp001
 version: '1.0.0'
 profile: sp001
 config-version: 2
 
+model-paths: ["models"]
 seed-paths: ["seeds"]
 test-paths: ["tests"]
 analysis-paths: ["analyses"]
@@ -15,7 +16,7 @@ clean-targets:
   - "logs"
 
 models:
-  sp01_dbt:
+  sp001:
     staging:
       +materialized: view
     intermediate:
