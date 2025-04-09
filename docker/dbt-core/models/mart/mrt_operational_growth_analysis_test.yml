@@ -1,0 +1,15 @@
+version: 2
+config-version: 2
+
+models:
+  - name: mrt_operational_growth_analysis
+
+    columns:
+      - name: month
+        tests:
+          - dbt_utils.at_least_one
+      
+      - name: total_revenue
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0

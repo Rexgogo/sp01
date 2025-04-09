@@ -1,0 +1,66 @@
+version: 2
+version: 2
+
+models:
+  - name: stg_recharge
+    description: >
+      transformed from dataset recharge of bq_sources.yml
+    columns:
+      - name: order_created_date
+        description: 訂單建立日期（DATE format）
+        tests:
+          - not_null
+
+      - name: order_created_at_utc
+        description: 訂單建立時間
+        tests:
+          - not_null
+
+      - name: order_completed_date
+        description: 訂單完成日期（轉為 DATE 格式）
+
+      - name: order_completed_at_utc
+        description: 訂單完成時間（UTC 時區）
+
+      - name: user_id
+        description: 使用者 ID
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+
+      - name: order_number
+        description: 訂單編號
+        tests:
+          - not_null
+          - unique
+
+      - name: order_purpose
+        description: 訂單目的（如：儲值、禮物、購物等）
+
+      - name: payment_gateway
+        description: 支付通路（如：LinePay、Apple Pay）
+
+      - name: payment_type
+        description: 支付方式（如：信用卡、虛擬帳號）
+
+      - name: order_type
+        description: 訂單類型（如：一次性、訂閱）
+
+      - name: recharge_amount
+        description: 使用者原始儲值金額
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              strictly: true
+
+      - name: amount_received
+        description: 平台實際收到金額（扣除手續費等）
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              strictly: true
+
+      - name: device_type
+        description: 使用者裝置類型（如：iOS、Android、Web）

@@ -1,6 +1,7 @@
 from google.cloud import bigquery
 import pandas as pd
-
+import yaml
+from config.bq_config import BQ_TABLE
 
 def load_csv_to_bigquery(csv_file, dataset_id, table_id):
     """
@@ -13,8 +14,9 @@ def load_csv_to_bigquery(csv_file, dataset_id, table_id):
     client = bigquery.Client(credentials=credentials)
 
     df = pd.read_csv(csv_file)
-
-    table_name = f"{dataset_id}.{table_id}"
+    
+    config = 
+    # table_name = f"{dataset_id}.{table_id}"
 
     job = client.load_table_from_dataframe(df, table_name)
     

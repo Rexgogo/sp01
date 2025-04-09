@@ -1,0 +1,38 @@
+version: 2
+
+modeles:
+  - name: stg_operation
+    # table-level test: Validating logical consistency between columns
+    tests:
+      -dbt_utils.expression_is_true:
+        expression: "col_a + col_b = col_c"
+        config:
+            where: "created_at > '2018-12-31'"
+  - description: >
+      clean data, ensure 
+  - columns:
+      - name: date
+        description: date of record
+        tests: 
+          - unique
+          - not_null
+      - name: 
+        description: 
+        tests:
+      - name: 1d_retention
+        description: 
+        tests: 
+          - dbt_utils.expression_is_true: 
+              expression: 'BETWEEN 0 AND 1'
+      - name: 
+        description: 
+        tests:
+          - expression_is_true:
+              expression: 
+      - name: 
+        description: 
+        tests:
+          - accepted_values:
+              values: ['', '', '']
+      
+           

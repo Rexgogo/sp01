@@ -1,0 +1,22 @@
+# config/bq_config.yaml
+
+operation:
+  dataset: sp001
+  table: operation
+
+recharge:
+  dataset: sp001
+  table: recharge
+
+membership:
+  dataset: sp001
+  table: membership
+
+channel:
+  dataset: sp001
+  table: channel
+
+
+test:
+  dataset: sp01
+  table: test

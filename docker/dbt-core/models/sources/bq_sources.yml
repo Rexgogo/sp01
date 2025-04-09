@@ -1,0 +1,16 @@
+# models/sp001/sources/bq_sources.yml
+
+sources:
+  - name: bq_raw_data             
+    database: daily-report-401707   # BQ project name
+    schema: sp001            # BQ dataset name
+    description: "raw data tables from sp01 ETL stored in Bigquery"
+    tables:
+      - name: operation
+        description: " Daily operational data"
+      - name: recharge
+        description: "User recharge (top-up) records"
+      - name: membership
+        description: "Membership subscription records"
+      - name: channel
+        description: "Channel performance records"

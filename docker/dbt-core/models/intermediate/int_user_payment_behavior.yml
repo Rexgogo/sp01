@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: int_user_payment_behavior
+    description: >
+      使用者付款行為彙總中繼表，包含付款方式多樣性（付款種類數）、
+      總付款次數、最常使用付款方式與其使用次數。
+      可供後續分群、偏好與忠誠度計算的基礎資料使用。
+
+    columns:
+      - name: user_id
+        description: 使用者 ID（PK）
+        tests: 
+          - not_null
+          - unique
+
+      - name: payment_type_count
+        description: 使用者曾使用的付款方式種類數
+        tests:
+          - not_null
+
+      - name: total_usage_count
+        description: 所有付款方式合計使用次數
+        tests:
+          - not_null
+
+      - name: preferred_payment_type
+        description: 使用者使用次數最多的付款方式
+        tests: 
+          - not_null
+
+      - name: preferred_payment_usage_count
+        description: 最常使用的付款方式被使用的次數
+        tests:
+          - not_null

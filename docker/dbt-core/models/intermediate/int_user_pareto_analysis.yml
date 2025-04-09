@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: int_user_pareto_analysis
+    description: "使用者的消費金額與貢獻度分析，用於 Pareto 分群"
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+          - unique
+      - name: cumsum_ratio
+        description: "累積總額佔比"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "cumsum_ratio <= 100"
+      - name: pareto_segment
+        description: "根據貢獻度分群"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Top 20%', 'Mid 60%', 'Bottom 20%']

@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: int_user_recharge_summary
+    description: >
+      用戶歷來儲值彙總中繼表，以 user_id 為主鍵，計算首次/最後儲值時間、總金額、次數、平均值等。
+      提供 MRT 分析用戶行為輪廓之基礎。
+
+    columns:
+      - name: user_id
+        description: 使用者唯一識別碼
+        tests:
+          - not_null
+          - unique
+
+      - name: first_recharge_date
+        description: 該使用者首次儲值日期
+        tests:
+          - not_null
+
+      - name: latest_recharge_date
+        description: 該使用者最新儲值日期
+        tests:
+          - not_null
+
+      - name: recharge_days_interval
+        description: 首次至最後儲值之間的天數
+
+      - name: total_recharge_times
+        description: 累積儲值次數（筆數）
+
+      - name: total_recharge_amount
+        description: 累積儲值金額
+
+      - name: avg_recharge_amount
+        description: 平均每筆儲值金額
+
+      - name: max_recharge_amount
+        description: 歷來最大單筆儲值金額
+
+      - name: min_recharge_amount
+        description: 歷來最小單筆儲值金額
+
+      - name: total_amount_received
+        description: 平台實收金額（不含折扣）
+
+      - name: avg_discount_rate
+        description: 平均收款比例（amount_received / recharge_amount）
