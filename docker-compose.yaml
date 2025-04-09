@@ -10,7 +10,7 @@ x-airflow-common:
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://sp01_db_postgres:mypostgres12345@sp01_db_postgres:5432/sp01_db_postgres # postgres user: pwd@hostname:5432/db_name
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://sp01_db_postgres:mypostgres12345@sp01_db_postgres:5432/sp01_db_postgres
-    AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    AIRFLOW__CELERY__BROKER_URL: redis://:@sp01_broker_redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
@@ -38,6 +38,8 @@ x-airflow-common:
       condition: service_healthy
     postgres:
       condition: service_healthy
+  networks:
+    - sp_bridge_001
 
 services:
   postgres:
@@ -97,6 +99,8 @@ services:
       retries: 50
       start_period: 30s
     restart: always
+    networks:
+      - sp_bridge_001
 
   airflow-webserver:
     <<: *airflow-common
@@ -106,8 +110,8 @@ services:
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
-      timeout: 10s
-      retries: 5
+      timeout: 20s
+      retries: 10
       start_period: 30s
     restart: always
     depends_on:
